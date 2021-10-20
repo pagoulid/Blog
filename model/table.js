@@ -1,5 +1,5 @@
 const db_instance = require('../database');
-let create = require('./CreateTable');
+let create = require('./SyncTable');
 
 let conn = require('../conn');
 

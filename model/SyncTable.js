@@ -1,7 +1,7 @@
-const {DataTypes} = require("sequelize");
+//const {DataTypes} = require("sequelize");
 
-module.exports = {CreateTable : async function Create(db,callback){
-    post = await db.define('posts',{
+module.exports = {SyncTable : async function Sync(db){
+    /*post = await db.define('posts',{
         id: {
           type: DataTypes.INTEGER,
           primaryKey:true
@@ -29,10 +29,10 @@ module.exports = {CreateTable : async function Create(db,callback){
       },{
     
         freezeTableName: true
-      });
+      });*/
 
-    await post.sync({force:true});// bind with schema synch with postgre
-    callback(post);
+    await db.sync({force:true});// bind with schema synch with postgre
+    
 
 
 }}

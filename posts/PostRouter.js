@@ -2,16 +2,15 @@ const express = require('express')
 const router = express.Router()
 const Parser = require('body-parser')
 
+let db_info = require('../model/model');// info has db_table and user{name,pswd}
+let username = db_info.user.name;
+let tablename = db_info.table.getTableName();
+let ID_count = 0;
 
+const Postgre = require('../conn')
 
-const Postgre = require('./../database')
 const {ParameterizedQuery: PQ} = require('pg-promise');
-const superuser_conn = Postgre[0]
-const user_conn = Postgre[1]
-const SchemaTable = Postgre[2]
 
-const superuser = Postgre[3]
-const user = Postgre[4]
 let counter = 0;
 
 
@@ -21,23 +20,56 @@ router.use(Parser.urlencoded({ extended: true })) // use it to read query
 
 router.get('/',(req,res)=>{
     //console.log(user)
-    res.redirect('/posts/'+user.name)
+    res.redirect('/'+tablename+'/'+username)//takes local/posts as origin only at parameters:'/'
     //res.render('createPost')
 })
 
+router.get('/'+username,(req,res)=>{// create new post for user
 
-router.get('/'+user.name,(req,res)=>{
-    //console.log(user)
-    /*var post ={
-        title:'',
-        main_text:'',
-
-    }*/
     res.render('createPost')
-    //res.render('createPost')
+})
+
+router.post('/'+username,async(req,res)=>{
+    ID_count = await AddCount();
+    var data ={id: 101,title:req.body.title,main_text:req.body.main_text
+        ,author:username,post_date:new Date()}// difference date() date
+
+
+    
+    // save post after creation
+    db_info.table.build(data).save().then(()=>{
+        // want a get request to main page
+        //res.end('posted')
+        res.redirect('/../../')// testing with blogserver to see if consumes the data
+    }).catch((e)=>{
+        console.log(e)
+        res.end('Error')
+    })
+    
+
+    
+    
+
+    
+    
+
+    //test
+    //let info = await db_info.table.findAll();
+    //console.log(info)
+    //res.end('posted!')
 })
 
 
+async function AddCount(){
+    return ID_count+1;
+}
+/*router.get('/'+user.name,(req,res)=>{
+   
+    res.render('createPost')
+   
+})/
+
+/*
 router.post('/'+user.name,(req,res)=>{
     console.log(req.body)
     counter = counter +1
@@ -64,16 +96,16 @@ router.post('/'+user.name,(req,res)=>{
             console.log('Error',error)   
         })*/
 
-        user_conn.one('INSERT INTO posts(id,title,main_text,author,post_date) VALUES($1,$2,$3,$4,$5)',[counter,title,main,user.name,date]).then(()=>{
-            console.log('Entry added!!')
-        }).catch((error)=>{
-            console.log('Error',error)   
-        })
+     //   user_conn.one('INSERT INTO posts(id,title,main_text,author,post_date) VALUES($1,$2,$3,$4,$5)',[counter,title,main,user.name,date]).then(()=>{
+       //     console.log('Entry added!!')
+       // }).catch((error)=>{
+        //    console.log('Error',error)   
+        //})
         //res.send('Works!!')
-    }
+    //}
         
     //res.render('createPost')
-})
+//})
 
 module.exports = router
 /*
