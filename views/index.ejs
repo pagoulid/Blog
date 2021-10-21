@@ -32,6 +32,24 @@
         <!--Want to pass stored posts-->
         <a href = "/posts" class = "btn btn-success">Create New  Article</a>
 
+        <% Entries.Loop((Entry)=>{ %>
+             
+             
+          <div class="card mt-4" >
+            
+            <h4 id = "title" name="title" value = "title" class = "card-title"  ><%= Entry.title%></h4>
+            
+            
+            <div class = "card-subtitle text-muted mb-2"><%= Entry.post_date%></div>
+            <div class = "card-text"><%= Entry.main_text%></div>
+            <a href="posts/<%= Entry.author %>/:<%= Entry.title %>" class = "btn btn-primary">More...</a>
+            
+          </div>
+
+
+       <% }) %>
+
+
        
 
         

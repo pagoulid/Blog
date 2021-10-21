@@ -29,17 +29,28 @@ router.get('/'+username,(req,res)=>{// create new post for user
     res.render('createPost')
 })
 
+
+router.get('/'+username+'/:id',async(req,res)=>{// create new post for user
+    let reqtitle = req.params.id.replace(/%20/g,' ').split(':');// want to find post given this title
+    Entry = await db_info.table.findOne({where:{title:reqtitle}});
+    console.log(Entry);
+    res.render('Works!!!!')
+})
+
 router.post('/'+username,async(req,res)=>{
     ID_count = await AddCount();
-    var data ={id: 101,title:req.body.title,main_text:req.body.main_text
+    var data ={id: 7,title:req.body.title,main_text:req.body.main_text
         ,author:username,post_date:new Date()}// difference date() date
 
 
+    // compare id with last id to see if it is unique
     
+    // UniqueID with callback
     // save post after creation
     db_info.table.build(data).save().then(()=>{
         // want a get request to main page
         //res.end('posted')
+        
         res.redirect('/../../')// testing with blogserver to see if consumes the data
     }).catch((e)=>{
         console.log(e)

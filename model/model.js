@@ -1,3 +1,5 @@
+//Table creation
+
 const db = require('../database.js');
 const {DataTypes} = require("sequelize");
 
