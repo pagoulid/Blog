@@ -1,11 +1,15 @@
 const express = require('express')
 const router = express.Router()
 const Parser = require('body-parser')
+const axios = require('axios');// line 58 test post data on homepage through axios
+
 
 let db_info = require('../model/model');// info has db_table and user{name,pswd}
 let username = db_info.user.name;
 let tablename = db_info.table.getTableName();
 let ID_count = 0;
+
+let Instance = require('./Instance');
 
 const Postgre = require('../conn')
 
@@ -33,29 +37,84 @@ router.get('/'+username,(req,res)=>{// create new post for user
 router.get('/'+username+'/:id',async(req,res)=>{// create new post for user
     let reqtitle = req.params.id.replace(/%20/g,' ').split(':');// want to find post given this title
     Entry = await db_info.table.findOne({where:{title:reqtitle}});
-    console.log(Entry);
-    res.render('Works!!!!')
+    
+    res.render('Post',{Entry:Entry})
 })
 
-router.post('/'+username,async(req,res)=>{
-    ID_count = await AddCount();
-    var data ={id: 7,title:req.body.title,main_text:req.body.main_text
-        ,author:username,post_date:new Date()}// difference date() date
+router.post('/'+username+'0',async(req,res)=>{// passing 0 to ignore it testing on blogserver
+    
+
+    //add count rows here make comparison with prev id(must be serial) and post data to homepage
+    let {count,rows} = await db_info.table.findAndCountAll();
+    let Entries = new Instance(rows,count);
+    Entries.Tail((Last_id)=>{
+        let data ={id: Last_id+1,title:req.body.title,main_text:req.body.main_text
+            ,author:username,post_date:new Date()} // increment id from last id element
 
 
+            let response = new Promise((resolve,reject)=>{
+                res.end()
+                resolve('reponse OK')})
+            Promisechain(axios.default,db_info.table,response);
+            //save new entry warning sos for : in title messages
+            /*db_info.table.build(data).save().then(()=>{
+                // want a get request to main page
+        
+                axios.default.post('/',{Entries:Entries})
+                
+        
+                //axios.post('/../../',{Entries:Entries})// pass Entries on blogserver in oorder not to redefine them
+                //res.redirect('/../../')// testing with blogserver to see if consumes the data
+                
+            }).then(()=>{res.end()}).catch((e)=>{
+                console.log(e)
+                res.end('Error')
+            })*/
+
+    })
+    
+// chaining promises func for
+// After saving post -> axios.post-> res.end this response
+// Maybe return new promise on which send first response then axios
+function Promisechain(axios,table,resp){
+
+    return table.build(data).save().then(()=>{
+        return resp.then((msg)=>{
+
+
+
+            console.log(msg);
+            return axios.post('/',{Entries:'check'}).then(()=>{
+
+                console.log('Process worked OK')
+           })
+        })
+    })
+
+
+}
+    
+    
+    
+    
+    
+    
+    
+    
     // compare id with last id to see if it is unique
     
     // UniqueID with callback
     // save post after creation
-    db_info.table.build(data).save().then(()=>{
+    /*db_info.table.build(data).save().then(()=>{
         // want a get request to main page
-        //res.end('posted')
         
+
         res.redirect('/../../')// testing with blogserver to see if consumes the data
+        
     }).catch((e)=>{
         console.log(e)
         res.end('Error')
-    })
+    })*/
     
 
     
@@ -64,10 +123,7 @@ router.post('/'+username,async(req,res)=>{
     
     
 
-    //test
-    //let info = await db_info.table.findAll();
-    //console.log(info)
-    //res.end('posted!')
+   
 })
 
 
