@@ -48,31 +48,7 @@ class Instance{
 
 
 
-    PostLoop(callback){
-        
-
-        while(this.count<this.len-1){
-            this.count++;
-            
-            //let info = Object.entries(this.body[this.count]);
-            
-            let val = Object.values(this.body[this.count]);// get the values from datavalues content only
-
-
-            let res={
-                'id':val[0],
-                'title':val[1],
-                'main_text':val[2],
-                'author':val[3],
-                'post_date':val[4]
-
-            }
-            callback.call(this,res);
-
-        }
-
-
-    }
+   
 }
 
 module.exports = Instance;
