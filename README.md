@@ -23,3 +23,13 @@
    * Ejs 3.1.6
    * Nodemon 2.0.12
    * Sequelize 6.6.5
+
+
+
+**Samples:**
+
+
+![Main page sample ](https://github.com/pagoulid/Blog/blob/main/home_sample.png)
+![Main page sample ](https://github.com/pagoulid/Blog/blob/main/Newpost_sample.png)
+![Main page sample ](https://github.com/pagoulid/Blog/blob/main/Save_newpost_sample.png)
+![Main page sample ](https://github.com/pagoulid/Blog/blob/main/Read_More_sample.png)
